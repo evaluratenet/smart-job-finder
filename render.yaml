@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: smart-job-finder
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: FLASK_ENV
+        value: production
+    healthCheckPath: /
+    autoDeploy: true
+    domains:
+      - sjf.evalurate.net 
