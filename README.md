@@ -1,11 +1,11 @@
 # README.md
 # Smart Job Finder
 
-A Python Flask-based tool that lets users search job titles across multiple job portals (LinkedIn, Indeed, JobStreet), filter results by keywords, and generate company summaries using OpenAI GPT.
+A Python Flask-based tool that lets users search job titles across multiple job portals (currently, real data from Indeed using Selenium), filter results by keywords, and generate company summaries using OpenAI GPT.
 
 ## Features
-- Multi-site job search (LinkedIn, Indeed, JobStreet)
-- Keyword-based filtering
+- Real job search from Indeed (via Selenium web scraping)
+- Keyword-based filtering (positive and negative words)
 - AI-powered company summaries using OpenAI GPT
 - Clean, modern web interface
 
@@ -27,7 +27,17 @@ A Python Flask-based tool that lets users search job titles across multiple job 
    pip install -r requirements.txt
    ```
 
-4. Set your OpenAI API key as an environment variable:
+4. **Install ChromeDriver (for Selenium):**
+   - Download ChromeDriver from: https://sites.google.com/chromium.org/driver/
+   - Make sure the version matches your installed Chrome browser.
+   - Extract `chromedriver.exe` (Windows) or `chromedriver` (Mac/Linux).
+   - Move it to a folder, e.g., `C:\tools\chromedriver\`.
+   - Add that folder to your system PATH:
+     - Windows: Edit the `Path` variable in Environment Variables and add `C:\tools\chromedriver\`.
+     - Mac/Linux: Move to `/usr/local/bin/` and run `sudo chmod +x /usr/local/bin/chromedriver`.
+   - Test by running `chromedriver --version` in a new terminal.
+
+5. Set your OpenAI API key as an environment variable:
    ```bash
    # On Windows
    set OPENAI_API_KEY=your_key
@@ -36,12 +46,22 @@ A Python Flask-based tool that lets users search job titles across multiple job 
    export OPENAI_API_KEY=your_key
    ```
 
-5. Run the app:
+6. Run the app:
    ```bash
    python app.py
    ```
 
+## Filtering Logic
+- The app searches Indeed using only the job title(s) you enter.
+- After retrieving jobs, it filters them:
+  - **Positive words:** Only include jobs containing at least one of these words (in title or description).
+  - **Negative words:** Exclude jobs containing any of these words (in title or description).
+  - Filtering is case-insensitive.
+
 ## Deployment on Render
+
+### Note
+- Selenium/ChromeDriver setup on Render requires extra configuration and may not work out-of-the-box. For production, consider using an API if available.
 
 ### Automatic Deployment
 1. Fork this repository to your GitHub account
@@ -70,9 +90,10 @@ A Python Flask-based tool that lets users search job titles across multiple job 
 
 ## Usage
 1. Enter job titles (one per line) in the first text area
-2. Enter keywords (one per line) in the second text area
-3. Select which job sites to search
-4. Click "Search Jobs" to view results
+2. Enter positive keywords (one per line) in the second text area
+3. Enter negative keywords (one per line) in the third text area
+4. Select which job sites to search (currently, only Indeed returns real data)
+5. Click "Search Jobs" to view results
 
 ## Contributing
 1. Fork the repository
