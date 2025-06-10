@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Search Jobs - Smart Job Finder{% endblock %}
+
+{% block content %}
+<form method="POST">
+    <div class="input-section">
+        <label>Job Titles (one per line):</label>
+        <textarea name="job_titles" rows="6" placeholder="Enter job titles here, one per line&#10;Example:&#10;Sales Manager&#10;Business Development Executive&#10;Account Manager"></textarea>
+    </div>
+
+    <div class="input-section">
+        <label>Keywords (one per line):</label>
+        <textarea name="filter_terms" rows="6" placeholder="Enter keywords here, one per line&#10;Example:&#10;Sales&#10;P&L&#10;Logistics&#10;Supply Chain"></textarea>
+    </div>
+
+    <div class="sites-section">
+        <label>Select Job Sites:</label>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="sites" value="LinkedIn" checked> LinkedIn</label>
+            <label><input type="checkbox" name="sites" value="Indeed" checked> Indeed</label>
+            <label><input type="checkbox" name="sites" value="JobStreet" checked> JobStreet</label>
+        </div>
+    </div>
+
+    <input type="submit" value="Search Jobs">
+</form>
+{% endblock %} 
