@@ -1,7 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-import time
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 def generate_search_links(title, site):
     if site != 'Indeed':
@@ -11,16 +12,26 @@ def generate_search_links(title, site):
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
+    prefs = {"profile.managed_default_content_settings.images": 2}
+    options.add_experimental_option("prefs", prefs)
     driver = webdriver.Chrome(options=options)
 
     encoded_title = title.replace(' ', '+')
     url = f"https://sg.indeed.com/jobs?q={encoded_title}&fromage=7"
     driver.get(url)
-    time.sleep(2)  # Wait for page to load
+
+    # Wait for job cards to load (up to 10 seconds)
+    try:
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'a.tapItem'))
+        )
+    except Exception:
+        driver.quit()
+        return []
 
     jobs = []
     job_cards = driver.find_elements(By.CSS_SELECTOR, 'a.tapItem')
-    for card in job_cards[:30]:  # Limit to 30 jobs
+    for card in job_cards[:10]:  # Limit to 10 jobs
         try:
             job_title = card.find_element(By.CSS_SELECTOR, 'h2.jobTitle').text
             company = card.find_element(By.CSS_SELECTOR, 'span.companyName').text
