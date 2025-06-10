@@ -14,6 +14,7 @@ def index():
     if request.method == 'POST':
         job_titles = request.form['job_titles'].splitlines()
         filter_terms = [term.strip().lower() for term in request.form['filter_terms'].splitlines() if term.strip()]
+        avoid_terms = [term.strip().lower() for term in request.form.get('avoid_terms', '').splitlines() if term.strip()]
         selected_sites = request.form.getlist('sites')
 
         results = []
@@ -21,7 +22,7 @@ def index():
             for site in selected_sites:
                 listings = generate_search_links(title.strip(), site)
                 for listing in listings:
-                    match = keyword_match(listing['title'], listing['description'], filter_terms)
+                    match = keyword_match(listing['title'], listing['description'], filter_terms, avoid_terms)
                     summary = get_company_summary(listing['company'])
                     results.append({
                         **listing,
